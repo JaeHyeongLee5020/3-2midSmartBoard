@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jang.bbs.mapper.BoardMapper">
+
+	<!-- 게시판 목록 조회 -->
+	<select id="getBoardList" resultType="com.jang.bbs.model.BoardVO">
+		SELECT * FROM bbs_board WHERE del_yn='n' ORDER BY bno ASC
+	</select>
+
+	<!-- 게시판 글 조회 -->
+	<select id="getArticle" parameterType="int" resultType="com.jang.bbs.model.BoardVO">
+		SELECT * FROM bbs_board WHERE bno = #{bno} AND del_yn='n'
+	</select>
+
+	<!-- 게시판 글 생성 -->
+	<insert id="insertArticle" parameterType="com.jang.bbs.model.BoardVO">
+		INSERT INTO bbs_board (bno, title, content, writerId, regDate, viewcnt, replycnt, recommendcnt, del_yn)
+		VALUES (bbs_board_seq.NEXTVAL, #{title}, #{content}, #{writerId}, SYSDATE, #{viewcnt}, #{replycnt}, #{recommendcnt}, #{del_yn})
+	</insert>
+
+	<!-- 게시판 글 수정 -->
+    <update id="updateArticle" parameterType="com.jang.bbs.model.BoardVO">
+        UPDATE bbs_board SET title = #{title}, content = #{content} WHERE bno = #{bno}
+    </update>
+
+	<!-- 게시판 글 삭제 -->
+    <update id="deleteArticle" parameterType="int">
+        UPDATE bbs_board SET del_yn = 'y' WHERE bno = #{bno}
+    </update>
+
+	<!-- 조회수 증가 -->
+	<update id="incrementViewCnt" parameterType="int">
+		UPDATE bbs_board SET viewcnt = viewcnt + 1 WHERE bno = #{bno}
+	</update>
+
+	<!-- 추천수 증가 -->
+	<update id="incrementRecommendCnt" parameterType="int">
+		UPDATE bbs_board SET recommendcnt = recommendcnt + 1 WHERE bno = #{bno}
+	</update>
+
+	<!-- 전체 글 수 조회 -->
+	<select id="getTotalBoardCount" resultType="int">
+		SELECT COUNT(*) FROM bbs_board WHERE del_yn='n'
+	</select>
+
+	<update id="incrementGoodCnt" parameterType="int">
+		UPDATE bbs_board SET recommendcnt = recommendcnt + 1 WHERE bno = #{bno}
+	</update>
+
+</mapper>
